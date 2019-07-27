@@ -8,6 +8,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"log"
 	"net/http"
+	"github.com/labstack/echo/middleware"
+ 
 )
 
 // Person struct
@@ -39,6 +41,13 @@ func main() {
 	}
 
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE, echo.OPTIONS},
+	}))
+
+
 	e.GET("/locations/:label", func(e echo.Context) error {
 		requested_label := e.Param("label")
 		fmt.Println(requested_label)
