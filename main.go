@@ -29,7 +29,7 @@ type Location struct {
 }
 
 func main() {
-	session, err := mgo.Dial("mongodb+srv://zoomers:boomers@cluster0-u4nrk.gcp.mongodb.net/humana")
+	session, err := mgo.Dial("mongodb+srv://app:humana@cluster0-5ybnu.gcp.mongodb.net/test")
 	if err != nil {
 		panic(err)
 	}
