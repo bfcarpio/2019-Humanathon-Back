@@ -7,12 +7,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"log"
 	"net/http"
+	"github.com/labstack/echo/middleware"
 )
 
 // LocationSummary struct
 type LocationSummary struct {
 	ID    bson.ObjectId `json:"id" bson:"_id,omitempty"`
 	Label string        `json:"label"`
+	Description string 	`json:"description"`
 }
 
 // Location struct
@@ -48,11 +50,17 @@ func main() {
 	}
 
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE, echo.OPTIONS},
+	}))
+
 	e.GET("/locations", func(e echo.Context) error {
 		fmt.Println("/locations")
 
 		loc := []LocationSummary{}
-		err := db.Find(nil).Select(bson.M{"_id": 1, "label": 1}).All(&loc)
+		err := db.Find(nil).Select(bson.M{"_id": 1, "label": 1, "description": 1}).All(&loc)
 		if err != nil {
 			log.Println("Failed to get any record")
 			return e.JSON(http.StatusNotFound, err)
