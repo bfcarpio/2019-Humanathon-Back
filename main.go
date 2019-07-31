@@ -60,6 +60,7 @@ func main() {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE, echo.OPTIONS},
+		AllowHeaders: []string{"Origin, X-Requested-With, Content-Type, Accept"},
 	}))
 
 	e.GET("/locations", func(e echo.Context) error {
@@ -95,7 +96,7 @@ func main() {
 		requestID := e.Param("id")
 		log.Println("GET /locations/", requestID)
 
-		loc := Location{}
+		var loc map[string]interface{}
 		id, err := primitive.ObjectIDFromHex(requestID)
 		if err != nil {
 			log.Fatal(err)
