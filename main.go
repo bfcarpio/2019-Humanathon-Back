@@ -16,20 +16,20 @@ import (
 
 // LocationSummary struct
 type LocationSummary struct {
-	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Label       string             `json:"label"`
-	Description string             `json:"description"`
+	ID          primitive.ObjectID `json:"id" bson:"_id"`
+	Label       string             `json:"label" bson:"label"`
+	Description string             `json:"description" bson:"description"`
 }
 
 // Location struct
 type Location struct {
-	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Label       string             `json:"label"`
-	Description string             `json:"description"`
-	Phone       string             `json:"phone"`
-	Map         string             `json:"map"`
-	X           int                `json:"x"`
-	Y           int                `json:"y"`
+	ID          primitive.ObjectID `json:"id" bson:"_id"`
+	Label       string             `json:"label" bson:"label"`
+	Description string             `json:"description" bson:"description"`
+	Phone       string             `json:"phone" bson:"phone"`
+	Map         string             `json:"map" bson:"map"`
+	X           float64            `json:"x" bson:"x"`
+	Y           float64            `json:"y" bson:"y"`
 }
 
 func main() {
@@ -96,7 +96,7 @@ func main() {
 		requestID := e.Param("id")
 		log.Println("GET /locations/", requestID)
 
-		var loc map[string]interface{}
+		loc := new(Location)
 		id, err := primitive.ObjectIDFromHex(requestID)
 		if err != nil {
 			log.Fatal(err)
@@ -105,7 +105,8 @@ func main() {
 
 		err = collection.FindOne(context.TODO(), bson.M{"_id": bson.M{"$eq": id}}).Decode(&loc)
 		if err != nil {
-			log.Println("Failed to find location with key: ", requestID)
+			// log.Println("Failed to find location with key: ", requestID)
+			log.Fatal(err)
 			return e.JSON(http.StatusNotFound, requestID)
 		}
 		return e.JSON(http.StatusOK, loc)
